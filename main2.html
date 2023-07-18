@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Upload</title>
+  <style>
+    /* CSS styles here */
+    body {
+      background-image: url('im.jpg');
+    }
+    .header {
+      text-align: center;
+      padding: 20px;
+      background: rgb(118, 68, 6);
+      color: white;
+      font-size: 24px;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Inter", sans-serif;
+    }
+    .formbold-mb-5 {
+      margin-bottom: 20px;
+    }
+    .formbold-pt-3 {
+      padding-top: 12px;
+    }
+    .formbold-main-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+    }
+    .formbold-form-wrapper {
+      margin: 0 auto;
+      max-width: 300px;
+      width: 100%;
+      background: white;
+    }
+    .formbold-form-label {
+      display: block;
+      font-weight: 500;
+      font-size: 16px;
+      color: #07074d;
+      margin-bottom: 12px;
+    }
+    .formbold-form-label-2 {
+      font-weight: 600;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .formbold-form-input {
+      width: 100%;
+      padding: 12px 24px;
+      border-radius: 6px;
+      border: 1px solid #e0e0e0;
+      background: white;
+      font-weight: 500;
+      font-size: 16px;
+      color: #6b7280;
+      outline: none;
+      resize: none;
+    }
+    .formbold-form-input:focus {
+      border-color: rgb(118, 68, 6);
+      box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+    }
+    .formbold-btn {
+      text-align: center;
+      font-size: 16px;
+      border-radius: 6px;
+      padding: 14px 32px;
+      border: none;
+      font-weight: 600;
+      background-color: rgb(118, 68, 6);
+      color: white;
+      cursor: pointer;
+    }
+    .formbold-btn:hover {
+      box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+    }
+    .formbold--mx-3 {
+      margin-left: -12px;
+      margin-right: -12px;
+    }
+    .formbold-px-3 {
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+    .flex {
+      display: flex;
+    }
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    .w-full {
+      width: 100%;
+    }
+    .formbold-file-input input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    .formbold-file-input label {
+      position: relative;
+      border: 1px dashed #e0e0e0;
+      border-radius: 6px;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      text-align: center;
+    }
+    .formbold-drop-file {
+      display: block;
+      font-weight: 600;
+      color: #07074d;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .formbold-or {
+      font-weight: 500;
+      font-size: 16px;
+      color: #6b7280;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .formbold-browse {
+      font-weight: 500;
+      font-size: 16px;
+      color: #07074d;
+      display: inline-block;
+      padding: 8px 28px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+    .formbold-file-list {
+      border-radius: 6px;
+      background: #f5f7fb;
+      padding: 16px 32px;
+    }
+    .formbold-file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .formbold-file-item button {
+      color: #07074d;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .formbold-file-name {
+      font-weight: 500;
+      font-size: 16px;
+      color: #07074d;
+      padding-right: 12px;
+    }
+    .formbold-progress-bar {
+      margin-top: 20px;
+      position: relative;
+      width: 100%;
+      height: 6px;
+      border-radius: 8px;
+      background: #e2e5ef;
+    }
+    .formbold-progress {
+      position: absolute;
+      width: 75%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      background: rgb(118, 68, 6);
+      border-radius: 8px;
+    }
+    @media (min-width: 540px) {
+      .sm\:w-half {
+        width: 50%;
+      }
+    }
+    #uploadButton {
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    Apparel Detection
+  </div>
+  <div class="formbold-main-wrapper">
+    <div class="formbold-form-wrapper">
+      <form id="imageForm" enctype="multipart/form-data">
+        <div class="formbold-file-input">
+          <label for="imageInput" class="formbold-drop-file">
+            <input type="file" id="imageInput" accept="image/*" onchange="handleFileSelect(event)" />
+            <span id="selectedFileName">Select Image</span>
+          </label>
+        </div>
+        <div id="imagePreviewContainer"></div>
+        <div class="formbold-file-list" id="predictionsContainer"></div>
+        <button type="button" id="uploadButton" class="formbold-btn" onclick="uploadImage()">Upload</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function handleFileSelect(event) {
+      const fileInput = event.target;
+      const fileName = fileInput.files[0].name;
+      const selectedFileName = document.getElementById('selectedFileName');
+      selectedFileName.textContent = fileName;
+      selectedFileName.style.display = 'block';
+      fileInput.style.display = 'none';
+    }
+    async function uploadImage() {
+      const fileInput = document.getElementById('imageInput');
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async function (event) {
+        const imageBase64 = event.target.result;
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        imagePreviewContainer.innerHTML = '';
+        const imagePreview = document.createElement('img');
+        imagePreview.src = imageBase64;
+        imagePreview.style.maxWidth = '100%';
+        imagePreviewContainer.appendChild(imagePreview);
+        try {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://api.clarifai.com/v2/models/apparel-detection/versions/1ed35c3d176f45d69d2aa7971e6ab9fe/outputs', true);
+          xhr.setRequestHeader('Accept', 'application/json');
+          xhr.setRequestHeader('Authorization', 'Key 2bf298e5cd0f4791ab098b2eac917737');
+          xhr.setRequestHeader('Content-Type', 'application/json');
+
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+              if (xhr.status === 200) {
+                const result = JSON.parse(xhr.responseText);
+                displayPredictions(result.outputs[0].data.regions);
+              } else {
+                console.error('Error:', xhr.status);
+              }
+            }
+          };
+
+          const requestData = {
+            "user_app_id": {
+              "user_id": "clarifai",
+              "app_id": "main"
+            },
+            "model_id": "apparel-detection",
+            "inputs": [
+              {
+                "data": {
+                  "image": {
+                    "base64": imageBase64.split(',')[1]
+                  }
+                }
+              }
+            ]
+          };
+
+          xhr.send(JSON.stringify(requestData));
+          const dropFileLabel = document.querySelector('.formbold-drop-file');
+          const uploadButton = document.querySelector('.formbold-btn');
+          dropFileLabel.style.display = 'none';
+          uploadButton.style.display = 'none';
+          const uploadImageLabel = document.querySelector('.formbold-form-label-2');
+          uploadImageLabel.style.display = 'none';
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function displayPredictions(predictions) {
+      const predictionsContainer = document.getElementById('predictionsContainer');
+      predictionsContainer.innerHTML = '';
+
+      if (predictions && predictions.length > 0) {
+        predictions.forEach(prediction => {
+          const predictionItem = document.createElement('p');
+          predictionItem.innerText = `${prediction?.data?.concepts[0].name}`;
+          predictionsContainer.appendChild(predictionItem);
+        });
+      } else {
+        const noPredictionsMessage = document.createElement('p');
+        noPredictionsMessage.innerText = 'No predictions found.';
+        predictionsContainer.appendChild(noPredictionsMessage);
+      }
+    }
+  </script>
+</body>
+</html>
